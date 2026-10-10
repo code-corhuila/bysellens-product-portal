@@ -1,25 +1,37 @@
-# bysellens-product-portal
+# By Sellens · Product Portal
 
-> product bounded context: web UI (remote)
+Aplicación web independiente para la consulta y el control de existencias de By Sellens. Utiliza React 19, Ionic React 9, Vite 6 y `@bysellens/frontend-core@1.0.0`.
 
-Part of the **LMS Library** distributed system — team `lms-library`, Grupo 2.
-Governance and documentation live in [`library-docs`](https://github.com/code-corhuila/library-docs).
+## Desarrollo
 
-## Branching
-
-Three permanent branches. **None of them accepts a direct commit** — you enter through a child
-branch and leave through a Pull Request.
-
-```
-develop  <--PR--  feat/... fix/... chore/...
-qa       <--PR--  qa/...
-main     <--PR--  release/...  hotfix/...
+```bash
+npm ci
+npm run dev
 ```
 
-Promotion happens **by re-application** (`git cherry-pick -x`), never by merging one permanent
-branch into another: `merge develop -> qa` and `merge qa -> main` do not exist in this model.
+Vite sirve Product en `http://localhost:5176`. El modo predeterminado usa datos MOCK y no requiere backend. Para iniciar sesión en modo MOCK, usa `admin@bysellens.com` y `demo123`.
 
-`main` requires **1 approval from `ariel5253`**. On `develop` and `qa` the team sets its own review
-rule.
+## Pruebas y build
 
-Full policy: `00-governance/branching-policy.md` in `library-docs`.
+```bash
+npm run test.unit
+npm run lint
+npm run build
+```
+
+## Docker
+
+```bash
+docker build -t bysellens-product .
+docker run --rm -p 5176:80 bysellens-product
+```
+
+Nginx sirve la aplicación y `/health` responde `200` para el healthcheck del contenedor. La imagen no incluye backend ni base de datos.
+
+## Alcance del primer incremento
+
+Este incremento incorpora el arranque Ionic, el login y la sesión compartidos, el modo MOCK y la infraestructura de ejecución. La pantalla de stock y sus servicios se migrarán en incrementos siguientes.
+
+## Ramas
+
+Los cambios se proponen mediante pull requests hacia `develop`. Las promociones a `qa` y `main` siguen la política del equipo y se realizan mediante `git cherry-pick -x`.
