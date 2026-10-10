@@ -28,9 +28,9 @@ docker run --rm -p 5176:80 bysellens-product
 
 Nginx sirve la aplicación y `/health` responde `200` para el healthcheck del contenedor. La imagen no incluye backend ni base de datos.
 
-## Alcance del primer incremento
+## Alcance
 
-Este incremento incorpora el arranque Ionic, el login y la sesión compartidos, el modo MOCK y la infraestructura de ejecución. La pantalla de stock y sus servicios se migrarán en incrementos siguientes.
+El portal usa el arranque, login, sesión y configuración MOCK compartidos. Este incremento agrega los servicios de consulta y actualización de stock con datos MOCK; la pantalla de existencias queda pendiente.
 
 ## Ramas
 
