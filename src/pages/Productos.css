@@ -1,0 +1,52 @@
+.productos-content { --background: #fff9fb; }
+.productos-page { min-height: 100%; padding: 34px 0 56px; }
+.productos-container { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+.productos-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 27px; }
+.productos-kicker { color: #c45b83; font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+.productos-header h1 { margin: 8px 0; color: #302936; font: 700 32px/1.15 Georgia, 'Times New Roman', serif; }
+.productos-header p { margin: 0; color: #806d78; font-size: 14px; }
+.productos-refresh { min-height: 42px; padding: 0 17px; border: 1px solid #d45d8a; border-radius: 10px; background: #d45d8a; color: #fff; font-weight: 700; cursor: pointer; }
+.productos-refresh:hover:not(:disabled) { background: #c9517d; }
+.productos-refresh:disabled { opacity: .6; cursor: wait; }
+.productos-filters { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(180px, 250px); gap: 16px; margin-bottom: 20px; }
+.productos-search-wrapper, .productos-stock-filter { display: grid; gap: 7px; color: #75636e; font-size: 12px; font-weight: 700; }
+.productos-search, .productos-select { width: 100%; height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid #ead2dc; border-radius: 10px; outline: none; background: #fff; color: #443941; font: inherit; }
+.productos-search:focus, .productos-select:focus { border-color: #d86b94; box-shadow: 0 0 0 3px rgb(216 107 148 / 10%); }
+.productos-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 21px; }
+.productos-stat { display: grid; gap: 9px; padding: 17px 19px; border: 1px solid #efdce4; border-radius: 14px; background: #fff; }
+.productos-stat span { color: #806d78; font-size: 12px; }
+.productos-stat strong { color: #c55783; font-size: 25px; }
+.productos-card { overflow: hidden; border: 1px solid #efdce4; border-radius: 16px; background: #fff; box-shadow: 0 5px 20px rgb(76 47 62 / 4%); }
+.productos-card-header { padding: 19px 21px; border-bottom: 1px solid #f1dfe6; }
+.productos-card-header h2 { margin: 0; color: #302936; font: 700 19px/1.2 Georgia, 'Times New Roman', serif; }
+.productos-card-header p { margin: 5px 0 0; color: #9b8792; font-size: 12px; }
+.productos-table-container { width: 100%; overflow-x: auto; }
+.productos-table { width: 100%; min-width: 610px; border-collapse: collapse; text-align: left; }
+.productos-table th { height: 44px; padding: 0 16px; border-bottom: 1px solid #f0dce4; background: #fff3f7; color: #75636e; font-size: 11px; white-space: nowrap; }
+.productos-table td { height: 61px; padding: 0 16px; border-bottom: 1px solid #f2e4e9; color: #5e5059; font-size: 13px; white-space: nowrap; }
+.productos-table tbody tr:last-child td { border-bottom: 0; }
+.productos-table tbody tr:hover { background: #fffafb; }
+.productos-table td strong { color: #3b3139; }
+.productos-stock, .productos-status { display: inline-flex; align-items: center; justify-content: center; min-width: 38px; min-height: 26px; padding: 0 8px; border-radius: 8px; color: #3c3339; font-weight: 700; }
+.productos-stock.low, .productos-status.low { background: #fff4e8; color: #cf7b34; }
+.productos-stock.empty, .productos-status.empty { background: #fff0f1; color: #d45a62; }
+.productos-status.available { border: 1px solid #b8e4d7; border-radius: 999px; background: #f3fcf9; color: #279b7d; font-size: 11px; }
+.productos-status.low, .productos-status.empty { font-size: 11px; }
+.productos-message { padding: 30px 20px; color: #927e89; font-size: 13px; text-align: center; }
+.productos-error { color: #bd6471; }
+.productos-error p { margin: 0 0 12px; }
+.productos-adjustment-message { margin: 0; padding: 12px 20px; background: #f5fbf8; color: #32866f; font-size: 13px; }
+.productos-adjustment-controls { display: flex; align-items: center; gap: 6px; }
+.productos-adjustment-controls input { width: 58px; height: 34px; box-sizing: border-box; padding: 0 6px; border: 1px solid #ead2dc; border-radius: 7px; color: #443941; }
+.productos-adjustment-controls button { min-height: 34px; padding: 0 9px; border: 1px solid #d45d8a; border-radius: 7px; background: #fff; color: #b64772; font-size: 11px; font-weight: 700; cursor: pointer; }
+.productos-adjustment-controls button:hover:not(:disabled) { background: #fff3f7; }
+.productos-adjustment-controls button:disabled { opacity: .5; cursor: wait; }
+@media (max-width: 700px) {
+  .productos-page { padding-top: 23px; }
+  .productos-container { width: calc(100% - 28px); }
+  .productos-header { align-items: stretch; flex-direction: column; gap: 16px; }
+  .productos-header h1 { font-size: 28px; }
+  .productos-filters, .productos-stats { grid-template-columns: 1fr; }
+  .productos-refresh { width: 100%; }
+  .productos-table { min-width: 820px; }
+}
