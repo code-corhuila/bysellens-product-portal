@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import { obtenerProductos, type Producto } from '../services/productoService';
+import { ajustarStock, obtenerProductos, type Producto } from '../services/productoService';
 import './Productos.css';
 
 type FiltroStock = 'Todos' | 'Disponibles' | 'Bajo stock' | 'Agotados';
@@ -11,6 +11,9 @@ const Productos: React.FC = () => {
   const [stockFiltro, setStockFiltro] = useState<FiltroStock>('Todos');
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
+  const [mensajeAjuste, setMensajeAjuste] = useState('');
+  const [cantidades, setCantidades] = useState<Record<number, string>>({});
+  const [ajustando, setAjustando] = useState(false);
 
   const cargarProductos = useCallback(async () => {
     setCargando(true);
@@ -27,6 +30,32 @@ const Productos: React.FC = () => {
   useEffect(() => {
     void cargarProductos();
   }, [cargarProductos]);
+
+  const manejarAjuste = async (producto: Producto, operacion: 'aumentar' | 'disminuir') => {
+    const cantidad = Number(cantidades[producto.id] ?? '1');
+    setMensajeAjuste('');
+    if (!Number.isInteger(cantidad) || cantidad <= 0) {
+      setMensajeAjuste('Ingresa una cantidad entera mayor que cero.');
+      return;
+    }
+    if (operacion === 'disminuir' && cantidad > producto.stock) {
+      setMensajeAjuste('La cantidad no puede superar el stock disponible.');
+      return;
+    }
+
+    setAjustando(true);
+    try {
+      const actualizado = await ajustarStock(producto.id, operacion, cantidad);
+      setProductos(actuales => actuales.map(item => item.id === actualizado.id ? actualizado : item));
+      setMensajeAjuste(`Stock de ${producto.nombre} actualizado correctamente.`);
+    } catch (fallo) {
+      const respuesta = (fallo as { response?: { data?: { mensaje?: string; error?: string } } }).response?.data;
+      const mensaje = fallo instanceof Error ? fallo.message : '';
+      setMensajeAjuste(respuesta?.mensaje || respuesta?.error || mensaje || 'No fue posible actualizar el stock.');
+    } finally {
+      setAjustando(false);
+    }
+  };
 
   const productosFiltrados = useMemo(() => {
     const texto = busqueda.toLowerCase().trim();
@@ -113,6 +142,8 @@ const Productos: React.FC = () => {
                 </div>
               </div>
 
+              {mensajeAjuste && <p className="productos-adjustment-message" role="status">{mensajeAjuste}</p>}
+
               {cargando && <p className="productos-message" role="status">Cargando stock...</p>}
               {error && (
                 <div className="productos-message productos-error" role="alert">
@@ -127,7 +158,7 @@ const Productos: React.FC = () => {
                 <div className="productos-table-container">
                   <table className="productos-table">
                     <thead>
-                      <tr><th>Código</th><th>Producto</th><th>Stock actual</th><th>Stock mínimo</th><th>Disponibilidad</th></tr>
+                      <tr><th>Código</th><th>Producto</th><th>Stock actual</th><th>Stock mínimo</th><th>Disponibilidad</th><th>Ajustar stock</th></tr>
                     </thead>
                     <tbody>
                       {productosFiltrados.map(producto => {
@@ -141,6 +172,20 @@ const Productos: React.FC = () => {
                             <td><span className={`productos-stock${agotado ? ' empty' : bajo ? ' low' : ''}`}>{producto.stock}</span></td>
                             <td>{producto.stockMinimo}</td>
                             <td><span className={`productos-status ${agotado ? 'empty' : bajo ? 'low' : 'available'}`}>{disponibilidad}</span></td>
+                            <td>
+                              <div className="productos-adjustment-controls">
+                                <input
+                                  aria-label={`Cantidad para ${producto.nombre}`}
+                                  type="number"
+                                  min="1"
+                                  step="1"
+                                  value={cantidades[producto.id] ?? '1'}
+                                  onChange={evento => setCantidades(actuales => ({ ...actuales, [producto.id]: evento.target.value }))}
+                                />
+                                <button type="button" onClick={() => void manejarAjuste(producto, 'aumentar')} disabled={ajustando || cargando}>Aumentar</button>
+                                <button type="button" onClick={() => void manejarAjuste(producto, 'disminuir')} disabled={ajustando || cargando || producto.stock === 0}>Disminuir</button>
+                              </div>
+                            </td>
                           </tr>
                         );
                       })}
