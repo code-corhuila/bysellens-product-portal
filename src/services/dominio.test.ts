@@ -1,9 +1,14 @@
-import { beforeEach, expect, it } from 'vitest';
+import { beforeEach, expect, it, vi } from 'vitest';
 import { configurarFrontend } from '@bysellens/frontend-core/configuracion';
 import { ajustarStock, obtenerProductos } from './productoService';
 
+const api = vi.hoisted(() => ({ put: vi.fn() }));
+
+vi.mock('@bysellens/frontend-core/api', () => ({ default: api }));
+
 beforeEach(() => {
   localStorage.clear();
+  api.put.mockReset();
   configurarFrontend({ modo: 'mock', apiBase: '', portal: 'product' });
 });
 
@@ -33,3 +38,19 @@ it('impide que el stock simulado quede por debajo de cero', async () => {
     'La cantidad no puede superar el stock disponible.',
   );
 });
+
+it.each(['aumentar', 'disminuir'] as const)(
+  'envía la operación %s al endpoint de inventario en modo REAL',
+  async operacion => {
+    const producto = { id: 1, codigo: 'LAB001', nombre: 'Labial Rosa', stock: 8 };
+    api.put.mockResolvedValue({ data: producto });
+    configurarFrontend({ modo: 'real', apiBase: 'http://localhost:8080', portal: 'product' });
+
+    await expect(ajustarStock(1, operacion, 2)).resolves.toEqual(producto);
+    expect(api.put).toHaveBeenCalledWith(
+      `/api/inventario/1/${operacion}`,
+      null,
+      { params: { cantidad: 2 } },
+    );
+  },
+);
