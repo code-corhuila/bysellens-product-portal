@@ -30,7 +30,7 @@ Nginx sirve la aplicación y `/health` responde `200` para el healthcheck del co
 
 ## Alcance
 
-El portal usa el arranque, login, sesión y configuración MOCK compartidos. La pantalla Product permite consultar, buscar y filtrar existencias, con indicadores de stock bajo y agotado. Los ajustes de inventario se incorporarán en un incremento posterior.
+El portal usa el arranque, login, sesión y configuración MOCK compartidos. La pantalla Product permite consultar, buscar y filtrar existencias, con indicadores de stock bajo y agotado. También permite aumentar o disminuir unidades desde cada fila, con validación y persistencia MOCK.
 
 ## Ramas
 

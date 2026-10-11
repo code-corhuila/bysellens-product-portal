@@ -35,6 +35,12 @@
 .productos-message { padding: 30px 20px; color: #927e89; font-size: 13px; text-align: center; }
 .productos-error { color: #bd6471; }
 .productos-error p { margin: 0 0 12px; }
+.productos-adjustment-message { margin: 0; padding: 12px 20px; background: #f5fbf8; color: #32866f; font-size: 13px; }
+.productos-adjustment-controls { display: flex; align-items: center; gap: 6px; }
+.productos-adjustment-controls input { width: 58px; height: 34px; box-sizing: border-box; padding: 0 6px; border: 1px solid #ead2dc; border-radius: 7px; color: #443941; }
+.productos-adjustment-controls button { min-height: 34px; padding: 0 9px; border: 1px solid #d45d8a; border-radius: 7px; background: #fff; color: #b64772; font-size: 11px; font-weight: 700; cursor: pointer; }
+.productos-adjustment-controls button:hover:not(:disabled) { background: #fff3f7; }
+.productos-adjustment-controls button:disabled { opacity: .5; cursor: wait; }
 @media (max-width: 700px) {
   .productos-page { padding-top: 23px; }
   .productos-container { width: calc(100% - 28px); }
@@ -42,4 +48,5 @@
   .productos-header h1 { font-size: 28px; }
   .productos-filters, .productos-stats { grid-template-columns: 1fr; }
   .productos-refresh { width: 100%; }
+  .productos-table { min-width: 820px; }
 }
