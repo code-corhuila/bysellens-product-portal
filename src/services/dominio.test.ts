@@ -2,12 +2,13 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { configurarFrontend } from '@bysellens/frontend-core/configuracion';
 import { ajustarStock, obtenerProductos } from './productoService';
 
-const api = vi.hoisted(() => ({ put: vi.fn() }));
+const api = vi.hoisted(() => ({ get: vi.fn(), put: vi.fn() }));
 
 vi.mock('@bysellens/frontend-core/api', () => ({ default: api }));
 
 beforeEach(() => {
   localStorage.clear();
+  api.get.mockReset();
   api.put.mockReset();
   configurarFrontend({ modo: 'mock', apiBase: '', portal: 'product' });
 });
@@ -39,6 +40,17 @@ it('impide que el stock simulado quede por debajo de cero', async () => {
   );
 });
 
+it('propaga traceparent en la consulta real de productos', async () => {
+  const productos = [{ id: 1, codigo: 'LAB001', nombre: 'Labial Rosa', stock: 8 }];
+  api.get.mockResolvedValue({ data: productos });
+  configurarFrontend({ modo: 'real', apiBase: 'http://localhost:8080', portal: 'product' });
+
+  await expect(obtenerProductos()).resolves.toEqual(productos);
+  expect(api.get).toHaveBeenCalledWith('/api/productos', {
+    headers: { traceparent: expect.stringMatching(/^00-[0-9a-f]{32}-[0-9a-f]{16}-01$/) },
+  });
+});
+
 it.each(['aumentar', 'disminuir'] as const)(
   'envía la operación %s al endpoint de inventario en modo REAL',
   async operacion => {
@@ -47,10 +59,11 @@ it.each(['aumentar', 'disminuir'] as const)(
     configurarFrontend({ modo: 'real', apiBase: 'http://localhost:8080', portal: 'product' });
 
     await expect(ajustarStock(1, operacion, 2)).resolves.toEqual(producto);
-    expect(api.put).toHaveBeenCalledWith(
-      `/api/inventario/1/${operacion}`,
-      null,
-      { params: { cantidad: 2 } },
-    );
+    const [, , config] = api.put.mock.calls[0];
+    expect(api.put).toHaveBeenCalledWith(`/api/inventario/1/${operacion}`, null, {
+      params: { cantidad: 2 },
+      headers: { traceparent: expect.stringMatching(/^00-[0-9a-f]{32}-[0-9a-f]{16}-01$/) },
+    });
+    expect(config.headers.traceparent).toMatch(/^00-[0-9a-f]{32}-[0-9a-f]{16}-01$/);
   },
 );

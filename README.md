@@ -19,6 +19,8 @@ npm run lint
 npm run build
 ```
 
+Product-list and stock-adjustment operations emit structured browser-console records with W3C trace context. In real mode, the portal sends `traceparent` with its HTTP requests. MOCK mode only exercises client-side telemetry; backend propagation and centralized export are not configured by the portal.
+
 ## Docker
 
 ```bash
